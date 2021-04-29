@@ -1,6 +1,8 @@
 const {User} = require('../models')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const sgMail = require('@sendgrid/mail')
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 class UserController{
     
@@ -8,6 +10,23 @@ class UserController{
         const {email,password} = req.body
         User.create({email,password})
         .then((user) => {
+            const msg = {
+                to: user.email, // Change to your recipient
+                from: 'tugashacktiv8@gmail.com', // Change to your verified sender
+                subject: 'Notifikasi Registrasi',
+                text: `Halo ${user.email}. Terima kasih telah registrasi aplikasi Hacktiv8 news.`,
+                html: `Halo ${user.email}. Terima kasih telah registrasi aplikasi Hacktiv8 news.`,
+              }
+              
+            sgMail
+                .send(msg)
+                .then((response) => {
+                  console.log(response[0].statusCode)
+                  console.log(response[0].headers)
+                })
+                .catch((error) => {
+                  console.error(error)
+                })
             res.status(201).json({success:true, data:user})
         }).catch((err) => {
             console.log(err)
