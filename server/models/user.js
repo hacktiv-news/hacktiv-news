@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
 
 const bcrypt = require('bcryptjs');
 
@@ -15,20 +13,49 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-  };
-  User.init({
-    email: DataTypes.STRING,
-    password: DataTypes.STRING
-  }, {
-    sequelize,
-    hooks:{
-      beforeCreate(dataPass){
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(dataPass.password, salt);
-        dataPass.password = hash
+  }
+  User.init(
+    {
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: 'Email tidak boleh kosong'
+          },
+          isEmail: {
+            args: true,
+            msg: 'Email tidak sesuai format'
+          }
+        }
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: 'Password tidak boleh kosong'
+          },
+          len: {
+            args: [8, 32],
+            msg: 'Password 8-32 karakter'
+          }
+        }
       }
     },
-    modelName: 'User',
-  });
+    {
+      sequelize,
+      hooks: {
+        beforeCreate(dataPass) {
+          const salt = bcrypt.genSaltSync(10);
+          const hash = bcrypt.hashSync(dataPass.password, salt);
+          dataPass.password = hash;
+        }
+      },
+      modelName: 'User'
+    }
+  );
   return User;
 };
