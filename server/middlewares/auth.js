@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models');
+const { User, News } = require('../models');
 
 const authentication = (req, res, next) => {
   if (!req.headers.access_token) return next({ name: 'MISSING_ACCESS_TOKEN' });
@@ -22,4 +22,17 @@ const authentication = (req, res, next) => {
     .catch((err) => next(err));
 };
 
-module.exports = { authentication };
+const newsAuthorization = (req, res, next) => {
+  const { id } = req.params;
+
+  News.findOne({ include: User, where: { id: id, UserId: req.userId } })
+      .then((news) => {
+          if (!news) throw { name: 'RESOURCE_NOT_FOUND' };
+          req.news = news;
+          req.user = news.User
+          next();
+      })
+      .catch((err) => next(err));
+};
+
+module.exports = { authentication, newsAuthorization };
