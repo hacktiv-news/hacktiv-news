@@ -6,7 +6,7 @@ const {authentication} = require('../middlewares/auth')
 
 //3rd Party API News
 // all news
-router.get('/news', (req, res, next) => {
+router.get('/apis/news', (req, res, next) => {
   axios
     .get(
       `https://newsapi.org/v2/top-headlines?country=id&apiKey=${process.env.NEWS_API_KEY}`
@@ -21,7 +21,7 @@ router.get('/news', (req, res, next) => {
 });
 
 // sport news
-router.get('/news/sport', (req, res, next) => {
+router.get('/apis/news/sport', (req, res, next) => {
   axios
     .get(
       `https://newsapi.org/v2/top-headlines?country=id&category=sport&apiKey=${process.env.NEWS_API_KEY}`
@@ -36,7 +36,7 @@ router.get('/news/sport', (req, res, next) => {
 });
 
 // health news
-router.get('/news/health', (req, res, next) => {
+router.get('/apis/news/health', (req, res, next) => {
   axios
     .get(
       `https://newsapi.org/v2/top-headlines?country=id&category=health&apiKey=${process.env.NEWS_API_KEY}`
@@ -51,7 +51,7 @@ router.get('/news/health', (req, res, next) => {
 });
 //3rd Party API News
 
-router.get('/weather/jakarta', (req, res, next) => {
+router.get('/apis/weather/jakarta', (req, res, next) => {
   const kota = 'Jakarta'
   axios
     .get(
@@ -66,7 +66,7 @@ router.get('/weather/jakarta', (req, res, next) => {
     });
 });
 
-router.get('/weather/bandung', (req, res, next) => {
+router.get('/apis/weather/bandung', (req, res, next) => {
   const kota = 'Bandung'
   axios
     .get(
