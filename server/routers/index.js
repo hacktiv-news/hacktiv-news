@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const routesUser = require('./user')
+const routesNews = require('./news')
 const axios = require('axios')
+const {authentication} = require('../middlewares/auth')
 
 //3rd Party API News
 // all news
@@ -49,7 +51,7 @@ router.get('/news/health', (req, res, next) => {
 });
 //3rd Party API News
 
-router.get('/weather', (req, res, next) => {
+router.get('/weather/jakarta', (req, res, next) => {
   const kota = 'Jakarta'
   axios
     .get(
@@ -64,6 +66,23 @@ router.get('/weather', (req, res, next) => {
     });
 });
 
+router.get('/weather/bandung', (req, res, next) => {
+  const kota = 'Bandung'
+  axios
+    .get(
+      `http://api.weatherstack.com/current?query=${kota}&access_key=${process.env.WEATHERSTACK_API_KEY}`
+    )
+    .then((data) => {
+      res.status(200).json({ success: true, data: data.data });
+    })
+    .catch((err) => {
+      console.log(err);
+      next(err);
+    });
+});
+
 router.use('/', routesUser)
+router.use(authentication);
+router.use('/newscollection', routesNews);
 
 module.exports = router
